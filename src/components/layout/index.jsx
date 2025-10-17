@@ -1,16 +1,21 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 import Header from "../Header";
-import Footer from "../Footer";
 
-function Layout() {
+function Layout({ children }) {
   return (
     <div>
       <Header />
-      <main>
-        <Outlet />
-      </main>
-      <Footer />
+      <main style={{ padding: "20px" }}>{children}</main>
+      <footer
+        style={{
+          padding: "20px",
+          backgroundColor: "#f4f4f4",
+          marginTop: "30px",
+          textAlign: "center",
+        }}
+      >
+        <p>© 2025 Snežana React Store. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
