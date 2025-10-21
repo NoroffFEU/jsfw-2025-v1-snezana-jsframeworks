@@ -1,20 +1,21 @@
 import React from "react";
-import Header from "../Header";
 
 function Layout({ children }) {
   return (
     <div>
-      <Header />
-      <main style={{ padding: "20px" }}>{children}</main>
+      <header style={{ padding: "1rem", background: "#eee" }}>
+        <h2>🛍️ Snežana React Store</h2>
+      </header>
+      <main>{children}</main>
       <footer
         style={{
-          padding: "20px",
-          backgroundColor: "#f4f4f4",
-          marginTop: "30px",
+          padding: "1rem",
+          marginTop: "2rem",
+          background: "#eee",
           textAlign: "center",
         }}
       >
-        <p>© 2025 Snežana React Store. All rights reserved.</p>
+        <p>© 2025 Snežana Store</p>
       </footer>
     </div>
   );

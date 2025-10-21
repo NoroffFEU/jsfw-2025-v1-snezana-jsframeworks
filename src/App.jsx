@@ -9,16 +9,15 @@ import Contact from "./pages/Contact";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="product/:id" element={<Product />} />
-        <Route path="cart" element={<Cart />} />
-        <Route path="checkout-success" element={<CheckoutSuccess />} />
-        <Route path="contact" element={<Contact />} />
-        <Route path="*" element={<h2>404 Not Found</h2>} />
-      </Route>
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/product/:id" element={<Product />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout-success" element={<CheckoutSuccess />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </Layout>
   );
 }
 
