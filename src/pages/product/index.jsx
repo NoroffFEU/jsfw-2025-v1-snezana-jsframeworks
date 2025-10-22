@@ -1,46 +1,42 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useApi } from "../../hooks/useApi";
+import { useCartStore } from "../../store/cartStore";
 
-const Product = () => {
+function Product() {
   const { id } = useParams();
-  const { data, isLoading, isError } = useApi(`https://v2.api.noroff.dev/online-shop/${id}`);
+  const { data: product, isLoading, isError } = useApi(`https://v2.api.noroff.dev/online-shop/${id}`);
+  const addToCart = useCartStore((state) => state.addToCart);
 
-  if (isLoading) return <p>Loading product...</p>;
-  if (isError) return <p>Could not load product 😢</p>;
+  console.log("🧠 Product data from API:", product);
 
-  // ✅ FIXED: The product data is not nested under "data"
-  const product = data;
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Something went wrong loading the product.</p>;
+  if (!product || !product.title) return <p>Product not found.</p>;
 
-  if (!product) return <p>Product not found.</p>;
+  const handleAddToCart = () => {
+    addToCart(product);
+    alert(`${product.title} added to cart!`);
+  };
 
   return (
-    <div style={{ textAlign: "center", padding: "2rem" }}>
-      {product.image && (
+    <div style={{ padding: "2rem" }}>
+      <h1>{product.title}</h1>
+      {product.image && product.image.url && (
         <img
           src={product.image.url}
           alt={product.image.alt || product.title}
           width="300"
-          style={{ borderRadius: "8px", marginBottom: "1rem" }}
+          style={{ borderRadius: "8px" }}
         />
       )}
-      <h2>{product.title}</h2>
       <p>{product.description}</p>
-      <p><strong>{product.discountedPrice} NOK</strong></p>
-      <button
-        style={{
-          padding: "0.7rem 1.2rem",
-          border: "none",
-          background: "#222",
-          color: "#fff",
-          borderRadius: "6px",
-          cursor: "pointer"
-        }}
-      >
-        Add to Cart
-      </button>
+      <p>
+        Price: <strong>{product.discountedPrice || product.price} NOK</strong>
+      </p>
+      <button onClick={handleAddToCart}>Add to Cart</button>
     </div>
   );
-};
+}
 
 export default Product;
