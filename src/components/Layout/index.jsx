@@ -1,24 +1,13 @@
 import React from "react";
+import Header from "../Header";
+import Footer from "../Footer";
 
-function Layout({ children }) {
+export default function Layout({ children }) {
   return (
-    <div>
-      <header style={{ padding: "1rem", background: "#eee" }}>
-        <h2>🛍️ Snežana React Store</h2>
-      </header>
-      <main>{children}</main>
-      <footer
-        style={{
-          padding: "1rem",
-          marginTop: "2rem",
-          background: "#eee",
-          textAlign: "center",
-        }}
-      >
-        <p>© 2025 Snežana Store</p>
-      </footer>
-    </div>
+    <>
+      <Header />
+      <main style={{ minHeight: "80vh", padding: "1rem" }}>{children}</main>
+      <Footer />
+    </>
   );
 }
-
-export default Layout;

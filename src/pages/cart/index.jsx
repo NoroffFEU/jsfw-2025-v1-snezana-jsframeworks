@@ -3,66 +3,51 @@ import { useCartStore } from "../../store/cartStore";
 import { Link } from "react-router-dom";
 
 function Cart() {
-  const { cart, removeFromCart, clearCart, getCartCount } = useCartStore();
+  const { cart, removeFromCart, clearCart } = useCartStore();
 
-  console.log("🛒 Cart content:", cart);
-
-  // Total price calculation
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + item.quantity * (item.discountedPrice || item.price),
+  const total = cart.reduce(
+    (sum, item) => sum + item.discountedPrice * (item.quantity || 1),
     0
   );
 
-  // Empty cart
-  if (!cart || cart.length === 0) {
+  if (cart.length === 0) {
     return (
-      <div style={{ padding: "2rem" }}>
-        <h1>Your Cart is Empty 🛍️</h1>
-        <Link to="/">Go back to the store</Link>
+      <div className="cart-empty">
+        <h2>Your cart is empty 🛒</h2>
+        <Link to="/">Go back to shop</Link>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Your Cart ({getCartCount()} items)</h1>
+    <div className="cart-page">
+      <h1>Your Cart 🛍️</h1>
 
-      {cart.map((item) => (
-        <div
-          key={item.id}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1rem",
-            marginBottom: "1rem",
-            borderBottom: "1px solid #ddd",
-            paddingBottom: "1rem",
-          }}
-        >
-          {item.image && item.image.url && (
+      <ul className="cart-items">
+        {cart.map((item) => (
+          <li key={item.id} className="cart-item">
             <img
-              src={item.image.url}
+              src={item.image?.url || "/placeholder.png"}
               alt={item.title}
-              width="100"
-              style={{ borderRadius: "8px" }}
+              className="cart-item-image"
             />
-          )}
+            <div className="cart-item-details">
+              <h3>{item.title}</h3>
+              <p>Price: {item.discountedPrice} NOK</p>
+              <p>Quantity: {item.quantity || 1}</p>
+              <button onClick={() => removeFromCart(item.id)}>Remove</button>
+            </div>
+          </li>
+        ))}
+      </ul>
 
-          <div>
-            <h3>{item.title}</h3>
-            <p>Quantity: {item.quantity}</p>
-            <p>
-              Price:{" "}
-              {((item.discountedPrice || item.price) * item.quantity).toFixed(2)}{" "}
-              NOK
-            </p>
-            <button onClick={() => removeFromCart(item.id)}>Remove</button>
-          </div>
-        </div>
-      ))}
-
-      <h2>Total: {totalPrice.toFixed(2)} NOK</h2>
-      <button onClick={clearCart}>Clear Cart</button>
+      <div className="cart-summary">
+        <h2>Total: {total.toFixed(2)} NOK</h2>
+        <button onClick={clearCart}>Clear Cart</button>
+        <Link to="/checkout-success" className="checkout-btn">
+          Proceed to Checkout
+        </Link>
+      </div>
     </div>
   );
 }
