@@ -2,54 +2,126 @@ import React from "react";
 import { useCartStore } from "../../store/cartStore";
 import { Link } from "react-router-dom";
 
-function Cart() {
+export default function Cart() {
   const { cart, removeFromCart, clearCart } = useCartStore();
 
-  const total = cart.reduce(
-    (sum, item) => sum + item.discountedPrice * (item.quantity || 1),
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.discountedPrice * item.quantity,
     0
   );
 
   if (cart.length === 0) {
     return (
-      <div className="cart-empty">
+      <div style={{ textAlign: "center", marginTop: "4rem" }}>
         <h2>Your cart is empty 🛒</h2>
-        <Link to="/">Go back to shop</Link>
+        <Link
+          to="/"
+          style={{
+            textDecoration: "none",
+            backgroundColor: "#007bff",
+            color: "white",
+            padding: "0.5rem 1rem",
+            borderRadius: "6px",
+          }}
+        >
+          Go back to shopping
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="cart-page">
-      <h1>Your Cart 🛍️</h1>
+    <div style={{ maxWidth: "900px", margin: "2rem auto" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "2rem" }}>🛍️ Your Cart</h2>
 
-      <ul className="cart-items">
-        {cart.map((item) => (
-          <li key={item.id} className="cart-item">
+      {cart.map((item) => (
+        <div
+          key={item.id}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "1rem",
+            padding: "1rem",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <img
-              src={item.image?.url || "/placeholder.png"}
+              src={item.image?.url}
               alt={item.title}
-              className="cart-item-image"
+              width="80"
+              style={{ borderRadius: "6px" }}
             />
-            <div className="cart-item-details">
+            <div>
               <h3>{item.title}</h3>
-              <p>Price: {item.discountedPrice} NOK</p>
-              <p>Quantity: {item.quantity || 1}</p>
-              <button onClick={() => removeFromCart(item.id)}>Remove</button>
+              <p>Price: ${item.discountedPrice.toFixed(2)}</p>
+              <p>Qty: {item.quantity}</p>
             </div>
-          </li>
-        ))}
-      </ul>
+          </div>
 
-      <div className="cart-summary">
-        <h2>Total: {total.toFixed(2)} NOK</h2>
-        <button onClick={clearCart}>Clear Cart</button>
-        <Link to="/checkout-success" className="checkout-btn">
+          <button
+            onClick={() => removeFromCart(item.id)}
+            style={{
+              backgroundColor: "#dc3545",
+              color: "white",
+              border: "none",
+              padding: "0.5rem 1rem",
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+
+      <div
+        style={{
+          textAlign: "right",
+          marginTop: "2rem",
+          fontSize: "1.2rem",
+          fontWeight: "bold",
+        }}
+      >
+        Total: ${totalPrice.toFixed(2)}
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "1.5rem",
+        }}
+      >
+        <button
+          onClick={clearCart}
+          style={{
+            backgroundColor: "#6c757d",
+            color: "white",
+            border: "none",
+            padding: "0.5rem 1rem",
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}
+        >
+          Clear Cart
+        </button>
+
+        <Link
+          to="/checkout-success"
+          style={{
+            backgroundColor: "#28a745",
+            color: "white",
+            padding: "0.5rem 1rem",
+            borderRadius: "6px",
+            textDecoration: "none",
+          }}
+        >
           Proceed to Checkout
         </Link>
       </div>
     </div>
   );
 }
-
-export default Cart;
