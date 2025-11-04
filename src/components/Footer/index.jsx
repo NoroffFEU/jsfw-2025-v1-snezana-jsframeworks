@@ -1,11 +1,30 @@
 import React from "react";
+import "./Footer.css";
 
-function Footer() {
+export default function Footer() {
   return (
-    <footer>
-      <p>© {new Date().getFullYear()} Snezana React Store</p>
+    <footer className="footer">
+      <div className="footer-container">
+        <p>© {new Date().getFullYear()} Snežana Store. All rights reserved.</p>
+
+        <div className="footer-links">
+          <a
+            href="https://www.noroff.no/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Noroff
+          </a>
+          <a
+            href="https://github.com/NoroffFEU/jsfw-2025-v1-snezana-jsframeworks"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub Repo
+          </a>
+          <a href="/contact">Contact</a>
+        </div>
+      </div>
     </footer>
   );
 }
-
-export default Footer;

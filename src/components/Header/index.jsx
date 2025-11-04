@@ -1,65 +1,50 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import { useCartStore } from "../../store/cartStore";
+import "./Header.css";
 
 export default function Header() {
-  const { cart } = useCartStore();
+  // ✅ Always call hook unconditionally
+  const cartItems = useCartStore((state) => state.items) || [];
+  const itemCount = Array.isArray(cartItems) ? cartItems.length : 0;
 
-  // Calculate total quantity
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "1rem 2rem",
-        backgroundColor: "#f8f8f8",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-      }}
-    >
-      <Link to="/" style={{ textDecoration: "none", color: "black" }}>
-        <h2>🛍️ Snežana React Store</h2>
-      </Link>
+    <header>
+      <nav className="nav">
+        {/* 🛍️ Logo */}
+        <Link to="/" className="logo" onClick={closeMenu}>
+          🛍️ Snežana Store
+        </Link>
 
-      <nav style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-        <Link to="/" style={{ textDecoration: "none", color: "black" }}>
-          Home
-        </Link>
-        <Link to="/contact" style={{ textDecoration: "none", color: "black" }}>
-          Contact
-        </Link>
-        <Link
-          to="/cart"
-          style={{
-            textDecoration: "none",
-            color: "black",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.3rem",
-          }}
-        >
-          🛒 Cart
-          {totalItems > 0 && (
-            <span
-              style={{
-                backgroundColor: "#ff5a5f",
-                color: "white",
-                borderRadius: "50%",
-                width: "22px",
-                height: "22px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "0.8rem",
-              }}
-            >
-              {totalItems}
-            </span>
-          )}
-        </Link>
+        {/* 🍔 Mobile Menu Button */}
+        <div className="menu-toggle" onClick={toggleMenu}>
+          <span className={menuOpen ? "bar open" : "bar"}></span>
+          <span className={menuOpen ? "bar open" : "bar"}></span>
+          <span className={menuOpen ? "bar open" : "bar"}></span>
+        </div>
+
+        {/* 🔗 Navigation Links */}
+        <div className={`nav-links ${menuOpen ? "active" : ""}`}>
+          <NavLink to="/" end onClick={closeMenu}>
+            Home
+          </NavLink>
+          <NavLink to="/cart" onClick={closeMenu}>
+            Cart
+          </NavLink>
+          <NavLink to="/contact" onClick={closeMenu}>
+            Contact
+          </NavLink>
+
+          {/* 🛒 Cart Icon */}
+          <Link to="/cart" className="cart-icon" onClick={closeMenu}>
+            🛒
+            {itemCount > 0 && <span className="cart-count">{itemCount}</span>}
+          </Link>
+        </div>
       </nav>
     </header>
   );

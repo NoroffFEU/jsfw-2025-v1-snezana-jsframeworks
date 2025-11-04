@@ -1,0 +1,54 @@
+/* 🌈 Modern Footer Styling */
+.footer {
+  background: linear-gradient(135deg, #6610f2 0%, #007bff 100%);
+  color: white;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  margin-top: 3rem;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 5;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer p {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+/* 🔗 Footer Links */
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: white;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* ✨ Subtle hover underline effect */
+.footer-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+.footer-links a:hover::after {
+  width: 100%;
+}
