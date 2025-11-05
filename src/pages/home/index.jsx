@@ -1,73 +1,65 @@
-import React, { useState, useMemo } from "react";
-import { useApi } from "../../hooks/useApi";
-
+import React from "react";
 import "./Home.css";
+import { useApi } from "../../hooks/useApi";
+import { useCartStore } from "../../store/cartStore";
+import { useLocation } from "react-router-dom";
 
 function Home() {
-  const { data: products, loading, error } = useApi("https://v2.api.noroff.dev/online-shop");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
+  const { data: products, isLoading, isError } = useApi("https://v2.api.noroff.dev/online-shop");
+  const addToCart = useCartStore((state) => state.addToCart);
+  const location = useLocation();
 
-  // Collect unique categories
-  const categories = useMemo(() => {
-    if (!products) return [];
-    const unique = new Set(products.map(p => p.category));
-    return ["All", ...Array.from(unique)];
-  }, [products]);
+  // Extract search query from URL
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
-  // Filter logic
-  const filteredProducts = useMemo(() => {
-    if (!products) return [];
-    return products.filter(p => {
-      const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
-      const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-  }, [products, selectedCategory, searchQuery]);
+  // Filter products by search
+  const filteredProducts = products.filter((p) =>
+    p.title.toLowerCase().includes(searchQuery)
+  );
 
-  if (loading) return <p>Loading products...</p>;
-  if (error) return <p>Failed to load products.</p>;
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Failed to load products.</p>;
 
   return (
-    <div className="container">
-      <h1>Shop Products</h1>
+    <div className="home-container">
+      <h1>🛍 Shop All Products</h1>
+      {searchQuery && (
+        <p className="search-results">
+          Showing results for: <strong>"{searchQuery}"</strong>
+        </p>
+      )}
 
-      <div className="filters">
-        <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className="filter-select"
-        >
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="filter-search"
-        />
-      </div>
-
-      <div className="product-grid">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((p) => (
-            <div key={p.id} className="card">
-              <img src={p.image.url} alt={p.title} />
-              <h3>{p.title}</h3>
-              <p>{p.description}</p>
-              <p>
-                <strong>${p.discountedPrice ?? p.price}</strong>
-              </p>
+      {filteredProducts.length === 0 ? (
+        <p className="no-results">No products found.</p>
+      ) : (
+        <div className="product-grid">
+          {filteredProducts.map((product) => (
+            <div className="product-card" key={product.id}>
+              <div className="image-wrapper">
+                <img src={product.image.url} alt={product.title} />
+              </div>
+              <div className="product-info">
+                <h3>{product.title}</h3>
+                <p className="desc">{product.description}</p>
+                <div className="price-section">
+                  {product.discountedPrice < product.price ? (
+                    <>
+                      <span className="old-price">${product.price.toFixed(2)}</span>
+                      <span className="new-price">${product.discountedPrice.toFixed(2)}</span>
+                    </>
+                  ) : (
+                    <span className="new-price">${product.price.toFixed(2)}</span>
+                  )}
+                </div>
+                <button onClick={() => addToCart(product)} className="add-btn">
+                  🛒 Add to Cart
+                </button>
+              </div>
             </div>
-          ))
-        ) : (
-          <p>No products match your filters.</p>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
