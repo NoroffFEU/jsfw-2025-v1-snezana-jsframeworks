@@ -7,22 +7,30 @@ function Home() {
   const { data: products, isLoading, isError } = useApi("https://v2.api.noroff.dev/online-shop");
   const addToCart = useCartStore((state) => state.addToCart);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
 
   // Handle loading and error
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Failed to load products.</p>;
+// Extract all unique categories dynamically
+  const categories = ["All", ...new Set(products.map((p) => p.tags?.[0] || "Uncategorized"))];
 
-  // Filter products live as user types
-  const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter logic: both search + category
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "All" ||
+      (product.tags && product.tags.includes(selectedCategory));
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="home-container">
       <h1>🛍 Shop All Products</h1>
 
-      {/* 🔍 Search Bar */}
-      <div className="search-bar-container">
+      {/* 🔍 Search and Category Filter */}
+      <div className="filter-bar">
         <input
           type="text"
           placeholder="Search products..."
@@ -30,6 +38,18 @@ function Home() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
+
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="category-select"
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
       </div>
 
       {filteredProducts.length === 0 ? (
