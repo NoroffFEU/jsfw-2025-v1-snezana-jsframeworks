@@ -1,34 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Home.css";
 import { useApi } from "../../hooks/useApi";
 import { useCartStore } from "../../store/cartStore";
-import { useLocation } from "react-router-dom";
 
 function Home() {
   const { data: products, isLoading, isError } = useApi("https://v2.api.noroff.dev/online-shop");
   const addToCart = useCartStore((state) => state.addToCart);
-  const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Extract search query from URL
-  const searchParams = new URLSearchParams(location.search);
-  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
-
-  // Filter products by search
-  const filteredProducts = products.filter((p) =>
-    p.title.toLowerCase().includes(searchQuery)
-  );
-
+  // Handle loading and error
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Failed to load products.</p>;
+
+  // Filter products live as user types
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="home-container">
       <h1>🛍 Shop All Products</h1>
-      {searchQuery && (
-        <p className="search-results">
-          Showing results for: <strong>"{searchQuery}"</strong>
-        </p>
-      )}
+
+      {/* 🔍 Search Bar */}
+      <div className="search-bar-container">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+      </div>
 
       {filteredProducts.length === 0 ? (
         <p className="no-results">No products found.</p>

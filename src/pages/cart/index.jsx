@@ -1,63 +1,47 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "./Cart.css";
 import { useCartStore } from "../../store/cartStore";
+import "./cart.css";
 
 function Cart() {
   const { cart, removeFromCart, clearCart } = useCartStore();
 
-  const total = cart.reduce((sum, item) => sum + item.discountedPrice, 0);
-
-  const handleCheckout = () => {
-    if (cart.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
-    alert("Proceeding to checkout...");
-  };
+  const total = cart.reduce(
+    (sum, item) => sum + (item.discountedPrice ?? item.price) * item.quantity,
+    0
+  );
 
   return (
-    <div className="cart-container">
-      <h1 className="cart-title">🛒 Your Cart</h1>
+    <div className="container cart-page">
+      <h1>Your Cart</h1>
 
       {cart.length === 0 ? (
-        <p className="empty-cart">Your cart is empty.</p>
+        <p>Your cart is empty 🛒</p>
       ) : (
         <>
-          <ul className="cart-items">
+          <div className="cart-items">
             {cart.map((item) => (
-              <li key={item.id} className="cart-item">
+              <div className="cart-item" key={item.id}>
                 <img src={item.image?.url} alt={item.title} />
-                <div className="cart-item-info">
+                <div className="cart-details">
                   <h3>{item.title}</h3>
-                  <p>{item.description}</p>
-                  <p>
-                    <strong>{item.discountedPrice.toFixed(2)} NOK</strong>
-                  </p>
+                  <p>${(item.discountedPrice ?? item.price).toFixed(2)}</p>
+                  <p>Qty: {item.quantity}</p>
                 </div>
                 <button
-                  className="cart-button remove"
+                  className="btn-remove"
                   onClick={() => removeFromCart(item.id)}
                 >
                   Remove
                 </button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
 
           <div className="cart-summary">
-            <h2>Total: {total.toFixed(2)} NOK</h2>
-
-            <div className="cart-buttons">
-              <button className="cart-button remove" onClick={clearCart}>
-                Clear Cart
-              </button>
-              <Link to="/checkout-success">
-                <button className="cart-button" onClick={handleCheckout}>
-                  Proceed to Checkout
-                </button>
-              </Link>
-            </div>
+            <h3>Total: ${total.toFixed(2)}</h3>
+            <button className="btn-clear" onClick={clearCart}>
+              Clear Cart
+            </button>
           </div>
         </>
       )}

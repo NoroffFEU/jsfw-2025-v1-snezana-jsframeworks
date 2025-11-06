@@ -1,3 +1,26 @@
+/* 🔍 Search Bar Styling */
+.search-bar-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0 1rem 0;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.8rem 1rem;
+  border: 2px solid #007bff;
+  border-radius: 30px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #6610f2;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
 .home-container {
   padding: 2rem;
   text-align: center;
