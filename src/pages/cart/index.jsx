@@ -3,11 +3,10 @@ import "./cart.css";
 import { useCartStore } from "../../store/cartStore";
 
 function Cart() {
-  const { cart, removeFromCart, clearCart } = useCartStore((state) => ({
-    cart: state.cart,
-    removeFromCart: state.removeFromCart,
-    clearCart: state.clearCart,
-  }));
+  // ✅ Use destructuring outside of render to prevent re-renders
+  const cart = useCartStore((state) => state.cart);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const clearCart = useCartStore((state) => state.clearCart);
 
   const total = cart.reduce(
     (sum, item) => sum + (item.discountedPrice || item.price),
@@ -40,7 +39,6 @@ function Cart() {
             ))}
           </div>
 
-          {/* ✅ Buttons aligned and consistent */}
           <div className="cart-actions">
             <button className="btn clear-btn" onClick={clearCart}>
               🧹 Clear Cart
@@ -48,7 +46,10 @@ function Cart() {
             <div className="cart-total">
               <strong>Total:</strong> ${total.toFixed(2)}
             </div>
-            <button className="btn checkout-btn">
+            <button
+              className="btn checkout-btn"
+              onClick={() => alert("✅ Checkout successful!")}
+            >
               💳 Checkout
             </button>
           </div>
