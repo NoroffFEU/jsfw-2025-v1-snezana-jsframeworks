@@ -1,46 +1,55 @@
 import React from "react";
-import { useCartStore } from "../../store/cartStore";
 import "./cart.css";
+import { useCartStore } from "../../store/cartStore";
 
 function Cart() {
-  const { cart, removeFromCart, clearCart } = useCartStore();
+  const { cart, removeFromCart, clearCart } = useCartStore((state) => ({
+    cart: state.cart,
+    removeFromCart: state.removeFromCart,
+    clearCart: state.clearCart,
+  }));
 
   const total = cart.reduce(
-    (sum, item) => sum + (item.discountedPrice ?? item.price) * item.quantity,
+    (sum, item) => sum + (item.discountedPrice || item.price),
     0
   );
 
   return (
-    <div className="container cart-page">
-      <h1>Your Cart</h1>
+    <div className="cart-container">
+      <h1>🛒 Your Shopping Cart</h1>
 
       {cart.length === 0 ? (
-        <p>Your cart is empty 🛒</p>
+        <p className="empty-cart">Your cart is empty.</p>
       ) : (
         <>
-          <div className="cart-items">
+          <div className="cart-list">
             {cart.map((item) => (
               <div className="cart-item" key={item.id}>
-                <img src={item.image?.url} alt={item.title} />
+                <img src={item.image.url} alt={item.title} />
                 <div className="cart-details">
                   <h3>{item.title}</h3>
-                  <p>${(item.discountedPrice ?? item.price).toFixed(2)}</p>
-                  <p>Qty: {item.quantity}</p>
+                  <p>${(item.discountedPrice || item.price).toFixed(2)}</p>
                 </div>
                 <button
-                  className="btn-remove"
+                  className="btn remove-btn"
                   onClick={() => removeFromCart(item.id)}
                 >
-                  Remove
+                  ❌ Remove
                 </button>
               </div>
             ))}
           </div>
 
-          <div className="cart-summary">
-            <h3>Total: ${total.toFixed(2)}</h3>
-            <button className="btn-clear" onClick={clearCart}>
-              Clear Cart
+          {/* ✅ Buttons aligned and consistent */}
+          <div className="cart-actions">
+            <button className="btn clear-btn" onClick={clearCart}>
+              🧹 Clear Cart
+            </button>
+            <div className="cart-total">
+              <strong>Total:</strong> ${total.toFixed(2)}
+            </div>
+            <button className="btn checkout-btn">
+              💳 Checkout
             </button>
           </div>
         </>
