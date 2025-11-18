@@ -49,20 +49,41 @@ Styling	Custom CSS
 Deployment	Netlify / Vercel
 🧩 Folder Structure
 src/
- ├── components/
- │   ├── Header/
- │   ├── Footer/
- │   └── Layout/
- ├── hooks/
- │   └── useApi.jsx
- ├── pages/
- │   ├── Home/
- │   ├── Product/
- │   └── Cart/
- ├── store/
- │   └── cartStore.js
- ├── App.jsx
- └── index.js
+├── components/
+│   ├── Header/
+│   │   └── index.jsx
+│   ├── Footer/
+│   │   └── index.jsx
+│   ├── Layout/
+│   │   └── index.jsx
+│   └── SearchBar/
+│       └── index.jsx
+│
+├── hooks/
+│   └── useApi.jsx
+│
+├── pages/
+│   ├── Home/
+│   │   ├── index.jsx
+│   │   └── Home.css
+│   ├── Product/
+│   │   ├── index.jsx
+│   │   └── Product.css
+│   ├── Cart/
+│   │   ├── index.jsx
+│   │   └── Cart.css
+│   ├── CheckoutSuccess/
+│   │   └── index.jsx
+│   └── Contact/
+│       └── index.jsx
+│
+├── store/
+│   └── cartStore.js
+│
+├── App.jsx
+├── index.js
+└── index.css
+
 
 ⚙️ Installation & Setup
 
