@@ -1,5 +1,5 @@
-import React from "react";
-import "./cart.css";
+import React, { useState } from "react";
+import "./Cart.css";
 import { useCartStore } from "../../store/cartStore";
 
 function Cart() {
