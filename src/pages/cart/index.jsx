@@ -3,15 +3,21 @@ import "./cart.css";
 import { useCartStore } from "../../store/cartStore";
 
 function Cart() {
-  // ✅ Use destructuring outside of render to prevent re-renders
   const cart = useCartStore((state) => state.cart);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const clearCart = useCartStore((state) => state.clearCart);
+
+  const [showModal, setShowModal] = useState(false);
 
   const total = cart.reduce(
     (sum, item) => sum + (item.discountedPrice || item.price),
     0
   );
+
+  const handleCheckout = () => {
+    setShowModal(true);
+    clearCart();
+  };
 
   return (
     <div className="cart-container">
@@ -46,14 +52,23 @@ function Cart() {
             <div className="cart-total">
               <strong>Total:</strong> ${total.toFixed(2)}
             </div>
-            <button
-              className="btn checkout-btn"
-              onClick={() => alert("✅ Checkout successful!")}
-            >
+            <button className="btn checkout-btn" onClick={handleCheckout}>
               💳 Checkout
             </button>
           </div>
         </>
+      )}
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>✅ Checkout Successful!</h2>
+            <p>Thank you for your purchase.</p>
+            <button className="btn" onClick={() => setShowModal(false)}>
+              Close
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
